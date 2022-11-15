@@ -39,7 +39,8 @@ public class PeopleService {
         peopleRepository.deleteById(peopleId);
 
     }
-@Transactional
+
+    @Transactional
     public People updatePeople(Long peopleId,
                                String firstName,
                                String lastName,
