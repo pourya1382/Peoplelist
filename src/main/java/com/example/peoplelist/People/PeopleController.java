@@ -19,6 +19,14 @@ public class PeopleController {
     public List<People> getPeopleService() {
         return peopleService.getPeople();
     }
+    @GetMapping(path = "number")
+    public String numberOfPeople(){
+        return "number Of People: " +String.valueOf(peopleService.numberOfPeople());
+    }
+    @GetMapping(path = "average")
+    public String averagePeopleAges(){
+        return "average of people ages: " + String.valueOf(peopleService.averagePeopleAges());
+    }
 
     @PostMapping
     public People addNewPeople(@RequestBody People people) {

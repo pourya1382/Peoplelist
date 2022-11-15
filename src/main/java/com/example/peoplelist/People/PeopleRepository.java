@@ -11,5 +11,9 @@ import static org.hibernate.hql.internal.antlr.HqlTokenTypes.AS;
 public interface PeopleRepository extends JpaRepository<People,Long> {
     @Query("SELECT s FROM People s WHERE s.id=?1")
     Optional<People> findPeopleById(Long id);
+    @Query("SELECT COUNT(firstName) FROM People")
+    Long numberOfPeople();
+    @Query("SELECT AVG(age) FROM People")
+    Long averagePeopleAges();
 
 }

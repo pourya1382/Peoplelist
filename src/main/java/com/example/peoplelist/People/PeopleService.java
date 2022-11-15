@@ -1,9 +1,7 @@
 package com.example.peoplelist.People;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
@@ -49,23 +47,54 @@ public class PeopleService {
                 .orElseThrow(() -> new IllegalStateException(
                         "student with id " + peopleId + " does not exist!"
                 ));
-        System.out.println(firstName != null);
-        System.out.println(firstName.length() > 0);
-        System.out.println(!Objects.equals(people.getFirstName(), firstName));
+
         if (firstName != null && firstName.length() > 0 && !Objects.equals(people.getFirstName(), firstName)) {
             people.setFirstName(firstName);
-            System.out.println(people);
+
         }
         if (lastName != null && lastName.length() > 0 && !Objects.equals(people.getLastName(), lastName)) {
             people.setLastName(lastName);
-            System.out.println(people);
+
         }
         if (age != 0 && !Objects.equals(people.getAge(), age)) {
             people.setAge(age);
-            System.out.println(people);
+
         }
-        System.out.println(people);
+
 
         return peopleRepository.save(people);
+    }
+
+    public Long numberOfPeople() {
+//        return peopleRepository.count();
+        return peopleRepository.numberOfPeople();
+    }
+
+//    public long averagePeopleAges() {
+//
+//        Long average = Long.valueOf(0);
+//        for (Long i = Long.valueOf(1); i <=numberOfPeople() ; i++) {
+//            Long finalI = i;
+//            People people = peopleRepository.findById(i)
+//                    .orElseThrow(() -> new IllegalStateException(
+//                            "student with id does not exist!"
+//                    ));
+//            System.out.println(
+//                    people.getAge()
+//            );
+//            average+=people.getAge();
+//        }
+//        System.out.println(average);
+//        return average/numberOfPeople();
+//    }
+    public Long averagePeopleAges(){
+//        List<People> people = peopleRepository.findAll();
+//        Long number = 0L;
+//        for (int i = 0; i < people.size(); i++) {
+//            number +=people.get(i).getAge();
+//        }
+//        Long average = number/numberOfPeople();
+//        return average;
+        return peopleRepository.averagePeopleAges();
     }
 }
