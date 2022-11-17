@@ -1,9 +1,13 @@
 package com.example.peoplelist.People;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Data;
 
 import javax.persistence.*;
-
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table
 
@@ -24,16 +28,6 @@ public class People {
 
     private String lastName;
     private Integer age;
-
-    public People() {
-    }
-
-    public People(Long id, String firstName, String lastName, Integer age) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.age = age;
-    }
 
     public People(String firstName, String lastName, Integer age) {
         this.firstName = firstName;

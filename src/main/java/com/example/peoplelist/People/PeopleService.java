@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class PeopleService {
+public class PeopleService{
     private PeopleRepository peopleRepository;
 
     public PeopleService(PeopleRepository peopleRepository) {
@@ -40,24 +40,22 @@ public class PeopleService {
 
     @Transactional
     public People updatePeople(Long peopleId,
-                               String firstName,
-                               String lastName,
-                               Integer age) {
+                               People peopleREquest) {
         People people = peopleRepository.findById(peopleId)
                 .orElseThrow(() -> new IllegalStateException(
                         "student with id " + peopleId + " does not exist!"
                 ));
 
-        if (firstName != null && firstName.length() > 0 && !Objects.equals(people.getFirstName(), firstName)) {
-            people.setFirstName(firstName);
+        if (peopleREquest.getFirstName() != null && peopleREquest.getFirstName().length() > 0 && !Objects.equals(people.getFirstName(), peopleREquest.getFirstName())) {
+            people.setFirstName(peopleREquest.getFirstName());
 
         }
-        if (lastName != null && lastName.length() > 0 && !Objects.equals(people.getLastName(), lastName)) {
-            people.setLastName(lastName);
+        if (peopleREquest.getLastName() != null && peopleREquest.getLastName().length() > 0 && !Objects.equals(people.getLastName(), peopleREquest.getLastName())) {
+            people.setLastName(peopleREquest.getLastName());
 
         }
-        if (age != 0 && !Objects.equals(people.getAge(), age)) {
-            people.setAge(age);
+        if (peopleREquest.getAge() != 0 && !Objects.equals(people.getAge(), peopleREquest.getAge())) {
+            people.setAge(peopleREquest.getAge());
 
         }
 
@@ -65,10 +63,13 @@ public class PeopleService {
         return peopleRepository.save(people);
     }
 
-    public Long numberOfPeople() {
+    public String numberOfPeople() {
 //        return peopleRepository.count();
-        return peopleRepository.numberOfPeople();
+//        return String.valueOf(peopleRepository.numberOfPeople());
+        return " ";
     }
+
+
 
 //    public long averagePeopleAges() {
 //
@@ -87,7 +88,7 @@ public class PeopleService {
 //        System.out.println(average);
 //        return average/numberOfPeople();
 //    }
-    public Long averagePeopleAges(){
+//    public Long averagePeopleAges(){
 //        List<People> people = peopleRepository.findAll();
 //        Long number = 0L;
 //        for (int i = 0; i < people.size(); i++) {
@@ -95,6 +96,5 @@ public class PeopleService {
 //        }
 //        Long average = number/numberOfPeople();
 //        return average;
-        return peopleRepository.averagePeopleAges();
     }
-}
+
