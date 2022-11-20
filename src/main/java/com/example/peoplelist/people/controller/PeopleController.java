@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping
+@RequestMapping(name = "peoples")
 public class PeopleController {
 
     private final ModelMapper modelMapper;
@@ -28,12 +28,12 @@ public class PeopleController {
     }
 
 
-    @GetMapping
-    public List<PeopleDto> getPeopleService() {
-        return peopleService.getPeople().stream().map(people -> modelMapper.map(people, PeopleDto.class)).collect(Collectors.toList());
-    }
+//    @GetMapping
+//    public List<PeopleDto> getPeopleService() {
+//        return peopleService.getPeople().stream().map(people -> modelMapper.map(people, PeopleDto.class)).collect(Collectors.toList());
+//    }
 
-    @GetMapping(path = "people")
+    @GetMapping()
     public Page<People> getPeoplePage(
             @RequestParam(required = false) String title,
             @RequestParam(defaultValue = "0") int page,
