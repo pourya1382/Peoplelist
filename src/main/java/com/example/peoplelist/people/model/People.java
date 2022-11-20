@@ -1,14 +1,15 @@
-package com.example.peoplelist.People;
+package com.example.peoplelist.people.model;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "peoples")
 @Table
 
 public class People {

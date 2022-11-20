@@ -1,7 +1,11 @@
-package com.example.peoplelist.People;
+package com.example.peoplelist.people.controller;
 
+import com.example.peoplelist.people.model.People;
+import com.example.peoplelist.people.model.PeopleDto;
+import com.example.peoplelist.people.model.StatsDto;
+import com.example.peoplelist.people.service.PeopleService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +16,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping
 public class PeopleController {
-    @Autowired
-    private ModelMapper modelMapper;
+
+    private final ModelMapper modelMapper;
     private final PeopleService peopleService;
 
-    public PeopleController(PeopleService peopleService, ModelMapper modelMapper) {
+    public PeopleController(PeopleService peopleService,
+                            ModelMapper modelMapper
+    ) {
         this.peopleService = peopleService;
         this.modelMapper = modelMapper;
     }
@@ -27,18 +33,25 @@ public class PeopleController {
         return peopleService.getPeople().stream().map(people -> modelMapper.map(people, PeopleDto.class)).collect(Collectors.toList());
     }
 
-    @GetMapping(path = "number")
-    public String numberOfPeople() {
-        return "number Of People: " + String.valueOf(peopleService.numberOfPeople());
+    @GetMapping(path = "people")
+    public Page<People> getPeoplePage(
+            @RequestParam(required = false) String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size
+    ) {
+        return peopleService.pagination(title, page, size);
+    }
+
+    @GetMapping(path = "count&average")
+    public StatsDto numberOfPeople() {
+        return peopleService.countAndAverage();
     }
 
 
     @PostMapping
     public ResponseEntity<PeopleDto> addNewPeople(@RequestBody PeopleDto peopleDto) {
-        People peopleRequest = modelMapper.map(peopleDto, People.class);
-        People people = peopleService.addNewPeople(peopleRequest);
-        PeopleDto peopleResponse = modelMapper.map(people, PeopleDto.class);
-        return new ResponseEntity<PeopleDto>(peopleResponse, HttpStatus.CREATED);
+
+        return new ResponseEntity<PeopleDto>(peopleService.addNewPeople(peopleDto), HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "{peopleId}")
@@ -51,10 +64,8 @@ public class PeopleController {
             @PathVariable("peopleId") Long peopleId,
             @RequestBody PeopleDto peopleDto
     ) {
-        People peopleRequest = modelMapper.map(peopleDto, People.class);
-        People people = peopleService.updatePeople(peopleId, peopleRequest);
-        PeopleDto peopleResponse = modelMapper.map(people, PeopleDto.class);
-        return ResponseEntity.ok().body(peopleResponse);
+
+        return ResponseEntity.ok().body(peopleService.updatePeople(peopleId, peopleDto));
     }
 
 

@@ -1,4 +1,4 @@
-package com.example.peoplelist.People;
+package com.example.peoplelist.people.model;
 
 import lombok.Data;
 

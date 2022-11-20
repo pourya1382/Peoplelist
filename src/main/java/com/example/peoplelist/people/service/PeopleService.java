@@ -1,5 +1,13 @@
-package com.example.peoplelist.People;
+package com.example.peoplelist.people.service;
 
+import com.example.peoplelist.people.model.People;
+import com.example.peoplelist.people.model.PeopleDto;
+import com.example.peoplelist.people.model.StatsDto;
+import com.example.peoplelist.people.repository.PeopleRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -8,11 +16,13 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class PeopleService{
+public class PeopleService {
     private PeopleRepository peopleRepository;
+    private final ModelMapper modelMapper;
 
-    public PeopleService(PeopleRepository peopleRepository) {
+    public PeopleService(PeopleRepository peopleRepository, ModelMapper modelMapper) {
         this.peopleRepository = peopleRepository;
+        this.modelMapper = modelMapper;
     }
 
     public List<People> getPeople() {
@@ -20,12 +30,16 @@ public class PeopleService{
         return peopleRepository.findAll();
     }
 
-    public People addNewPeople(People people) {
-        Optional<People> peopleOptional = peopleRepository.findPeopleById(people.getId());
+
+    public PeopleDto addNewPeople(PeopleDto peopleDto) {
+        People peopleRequest = modelMapper.map(peopleDto, People.class);
+        People people = peopleRepository.save(peopleRequest);
+        Optional<People> peopleOptional = peopleRepository.findPeopleById(peopleRequest.getId());
         if (peopleOptional.isPresent()) {
             System.out.println("People taken!");
         }
-        return peopleRepository.save(people);
+        PeopleDto peopleResponse = modelMapper.map(people, PeopleDto.class);
+        return peopleResponse;
 
     }
 
@@ -39,12 +53,12 @@ public class PeopleService{
     }
 
     @Transactional
-    public People updatePeople(Long peopleId,
-                               People peopleREquest) {
+    public PeopleDto updatePeople(Long peopleId, PeopleDto peopleDto) {
         People people = peopleRepository.findById(peopleId)
                 .orElseThrow(() -> new IllegalStateException(
                         "student with id " + peopleId + " does not exist!"
                 ));
+        People peopleREquest = modelMapper.map(peopleDto, People.class);
 
         if (peopleREquest.getFirstName() != null && peopleREquest.getFirstName().length() > 0 && !Objects.equals(people.getFirstName(), peopleREquest.getFirstName())) {
             people.setFirstName(peopleREquest.getFirstName());
@@ -58,17 +72,29 @@ public class PeopleService{
             people.setAge(peopleREquest.getAge());
 
         }
+//        People updatePeople = peopleRepository.save(peopleREquest);
 
 
-        return peopleRepository.save(people);
+        PeopleDto peopleResponse = modelMapper.map(people, PeopleDto.class);
+
+
+        return peopleResponse;
     }
 
-    public String numberOfPeople() {
-//        return peopleRepository.count();
-//        return String.valueOf(peopleRepository.numberOfPeople());
-        return " ";
+    public StatsDto countAndAverage() {
+        return peopleRepository.getStats();
     }
 
+    public Page<People> pagination(String title, int page, int size) {
+        Pageable paging = PageRequest.of(page, size);
+        Page<People> pagePeoples;
+        if (title == null) {
+            pagePeoples = peopleRepository.findAll(paging);
+        } else {
+            pagePeoples = peopleRepository.findByTitle(title, paging);
+        }
+        return pagePeoples;
+    }
 
 
 //    public long averagePeopleAges() {
@@ -96,5 +122,5 @@ public class PeopleService{
 //        }
 //        Long average = number/numberOfPeople();
 //        return average;
-    }
+}
 
